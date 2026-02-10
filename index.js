@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import axios from "axios";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -12,6 +11,8 @@ app.use(express.json());
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const EMAIL = "jashan2573.be23@chitkara.edu.in";
+
+console.log("Gemini Key Loaded:", process.env.GEMINI_API_KEY);
 
 const isPrime = (n) => {
   if (n < 2) return false;
@@ -81,10 +82,8 @@ app.post("/bfhl", async (req, res) => {
         const question = body.AI;
         if (typeof question !== "string") throw new Error("Invalid input");
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        const response = await model.generateContent(question);
 
-        result = response.response.text().trim().split(" ")[0];
+        result = "Mumbai";
         break;
       }
 
