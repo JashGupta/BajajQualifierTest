@@ -1,10 +1,15 @@
 import express from "express";
 import cors from "cors";
 import axios from "axios";
+import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const EMAIL = "jashan2573.be23@chitkara.edu.in";
 
@@ -76,20 +81,10 @@ app.post("/bfhl", async (req, res) => {
         const question = body.AI;
         if (typeof question !== "string") throw new Error("Invalid input");
 
-        const response = await axios.post(
-          "https://api.openai.com/v1/chat/completions",
-          {
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: question }],
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.OPENAI_KEY}`,
-            },
-          }
-        );
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const response = await model.generateContent(question);
 
-        result = response.data.choices[0].message.content.split(" ")[0];
+        result = response.response.text().trim().split(" ")[0];
         break;
       }
 
